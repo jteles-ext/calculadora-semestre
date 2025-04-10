@@ -1,3 +1,10 @@
+/public
+  index.html
+/src
+  App.jsx ou App.tsx
+  main.jsx ou main.tsx
+package.json
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
