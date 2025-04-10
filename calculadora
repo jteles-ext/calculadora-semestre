@@ -1,0 +1,71 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+export default function CalculadoraFrequencia() {
+  const [np1, setNp1] = useState(0);
+  const [np2, setNp2] = useState(0);
+  const [pim, setPim] = useState(0);
+  const [frequencia, setFrequencia] = useState(0);
+  const [resultado, setResultado] = useState(null);
+
+  const calcular = () => {
+    const MS = (4 * np1 + 4 * np2 + 2 * pim) / 10;
+    const porcentagem = (frequencia / 60) * 100;
+
+    let statusFrequencia = "";
+    let statusNota = "";
+    let notaExame = null;
+    let classificacao = "";
+
+    if (porcentagem >= 75) {
+      statusFrequencia = "APROVADO por frequência";
+      if (MS >= 7) {
+        statusNota = "APROVADO por nota";
+      } else {
+        statusNota = "NECESSÁRIO EXAME";
+        notaExame = (5 * 2) - MS;
+      }
+    } else {
+      statusFrequencia = "REPROVADO por frequência";
+    }
+
+    if (porcentagem === 100) classificacao = "Perfeito! Compareceu a todas as aulas";
+    else if (porcentagem >= 90) classificacao = "Ótima frequência";
+    else if (porcentagem >= 75) classificacao = "Frequência satisfatória";
+    else if (porcentagem >= 50) classificacao = "Frequência baixa - cuidado!";
+    else classificacao = "Frequência muito baixa - risco de reprovação";
+
+    setResultado({ MS, porcentagem, statusFrequencia, statusNota, notaExame, classificacao });
+  };
+
+  return (
+    <div className="max-w-xl mx-auto p-4 space-y-4">
+      <h1 className="text-2xl font-bold text-center">Calculadora de Média e Frequência</h1>
+      <Card>
+        <CardContent className="space-y-4 p-4">
+          <Input type="number" placeholder="Nota NP1" onChange={e => setNp1(parseFloat(e.target.value))} />
+          <Input type="number" placeholder="Nota NP2" onChange={e => setNp2(parseFloat(e.target.value))} />
+          <Input type="number" placeholder="Nota do PIM" onChange={e => setPim(parseFloat(e.target.value))} />
+          <Input type="number" placeholder="Horas frequentadas (máx 60h)" onChange={e => setFrequencia(parseInt(e.target.value))} />
+          <Button onClick={calcular}>Calcular</Button>
+        </CardContent>
+      </Card>
+
+      {resultado && (
+        <Card>
+          <CardContent className="p-4 space-y-2">
+            <p><strong>Média Semestral:</strong> {resultado.MS.toFixed(2)}</p>
+            <p><strong>Frequência:</strong> {resultado.porcentagem.toFixed(1)}%</p>
+            <p><strong>Status:</strong> {resultado.statusFrequencia} | {resultado.statusNota}</p>
+            {resultado.notaExame !== null && (
+              <p><strong>Nota mínima no exame:</strong> {resultado.notaExame.toFixed(2)}</p>
+            )}
+            <p><strong>Classificação:</strong> {resultado.classificacao}</p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
